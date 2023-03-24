@@ -42,7 +42,7 @@ class Heuristics:
         return self.score_material(board, white)
 
     def score_material(self, board, white):
-        chess_board = MakeMatrix().convert_to_matrix(board)
+        chess_board = ChessBoardToMatrix().convert_to_matrix(board)
         score = 0
         count_black = 0
         count_white = 0
@@ -87,6 +87,21 @@ class Heuristics:
         score += self.control_diagonals(board, white) / 5
         score += self.control_center(board, white) / 4
         return score
+    
+
+    # Get all the diagonal values for black pieces on chess
+    def get_black_diagonals_chess(chess_board):
+        black_diagonal = [chess_board[1][1], chess_board[2][2], chess_board[3][3], chess_board[4][4],
+                          chess_board[5][5], chess_board[6][6], chess_board[7][7], chess_board[0][0]]
+        return black_diagonal
+    
+
+    # Get all the diagonal values for white pieces on chess
+    def get_black_diagonals_chess(chess_board):
+        white_diagonal = [chess_board[0][7], chess_board[1][6], chess_board[2][5], chess_board[3][4],
+                          chess_board[4][3], chess_board[5][2], chess_board[6][1], chess_board[7][0]]
+        return white_diagonal
+    
 
     # function to score board based on control of diagonals
     # Mike K https://github.com/fieldsher
@@ -100,14 +115,12 @@ class Heuristics:
         diagonal_heuristics = 0
 
         # Convert board
-        chess_board = MakeMatrix().convert_to_matrix(board)
+        chess_board = ChessBoardToMatrix().convert_to_matrix(board)
 
         # Define diagonals
-        black_diagonal = [chess_board[1][1], chess_board[2][2], chess_board[3][3], chess_board[4][4],
-                          chess_board[5][5], chess_board[6][6], chess_board[7][7], chess_board[0][0]]
+        black_diagonal = black_diagonal(chess_board)
 
-        white_diagonal = [chess_board[0][7], chess_board[1][6], chess_board[2][5], chess_board[3][4],
-                          chess_board[4][3], chess_board[5][2], chess_board[6][1], chess_board[7][0]]
+        white_diagonal = white_diagonal(chess_board)
 
         for cell in black_diagonal:
             for figure in diagonal_figures:
@@ -128,7 +141,7 @@ class Heuristics:
         # This procedure will give heuristic points for control of central squares
 
         # Convert board
-        chess_board = MakeMatrix().convert_to_matrix(board)
+        chess_board = ChessBoardToMatrix().convert_to_matrix(board)
 
         # define central squares: e4, e5, d4, d5
         central_squares = [chess_board[4][4], chess_board[4][5], chess_board[5][4], chess_board[5][5]]
@@ -316,10 +329,23 @@ class Heuristics:
                 score += self.mobility_piece_score[piece_type]
 
         return score
+    
+    def get_knight_score_for_mobility_advanced(self, row_index, col_index, chess_board, score):
+        offset = [-2, -1, 1, 2]
+        for row_offset in offset:
+            for col_offset in offset:
+                if abs(row_offset) + abs(col_offset) == 3:
+                    new_row_pos = row_index + row_offset
+                    new_col_pos = col_index + col_offset
+                    if 0 <= new_row_pos <= 7 and 0 <= new_col_pos <= 7:
+                        piece_type = chess_board[new_row_pos][new_col_pos][1]
+                        if piece_type != "-":
+                            score += self.mobility_piece_score[piece_type]
+        return score
 
     def mobility_advanced(self, board, player_move):
         # Convert board
-        chess_board = MakeMatrix().convert_to_matrix(board)
+        chess_board = ChessBoardToMatrix().convert_to_matrix(board)
 
         score = 0
 
@@ -330,26 +356,17 @@ class Heuristics:
         cur_piece_type = chess_board[row][col][1]
 
         board.pop()
-        temp_chess_board = MakeMatrix().convert_to_matrix(board)
+        temp_chess_board = ChessBoardToMatrix().convert_to_matrix(board)
         temp_color = temp_chess_board[row][col][0]
         temp_piece_type = temp_chess_board[row][col][1]
         if temp_color == "w" and temp_piece_type != "-":
             score += self.mobility_piece_score[temp_piece_type]
         board.push(player_move)
-        chess_board = MakeMatrix().convert_to_matrix(board)
+        chess_board = ChessBoardToMatrix().convert_to_matrix(board)
 
         # knight
         if cur_piece_type == "n":
-            offset = [-2, -1, 1, 2]
-            for row_offset in offset:
-                for col_offset in offset:
-                    if abs(row_offset) + abs(col_offset) == 3:
-                        new_row_pos = row + row_offset
-                        new_col_pos = col + col_offset
-                        if 0 <= new_row_pos <= 7 and 0 <= new_col_pos <= 7:
-                            piece_type = chess_board[new_row_pos][new_col_pos][1]
-                            if piece_type != "-":
-                                score += self.mobility_piece_score[piece_type]
+            score += self.get_knight_score_for_mobility_advanced(row, col, chess_board, score)
 
         # queen
         if cur_piece_type == "q":
@@ -416,7 +433,8 @@ class Heuristics:
         return score
 
 
-class MakeMatrix:
+# This function converts the chess board in a matrix
+class ChessBoardToMatrix:
 
     def __init__(self):
         self.board_mat = []
