@@ -146,36 +146,38 @@ class Heuristics:
 
         return diagonal_heuristics
 
-    # function to score board based on control of center squares
-    # Mike K https://github.com/fieldsher
-    def control_center(self, board, white):
-        # This procedure will give heuristic points for control of central squares
 
-        # Convert board
-        chess_board = ChessBoardToMatrix().convert_to_matrix(board)
-
-        # define central squares: e4, e5, d4, d5
+    # Get the values of all central squares on the chess board
+    def get_central_squares(chess_board):
         central_squares = [chess_board[4][4], chess_board[4][5], chess_board[5][4], chess_board[5][5]]
+        return central_squares
+    
 
-        # Define squares can be used to control central squares by pawns
+    # Get the values of all white pawn squares on the chess board
+    def get_white_pawn_squares(chess_board):
         white_pawn_squares = [chess_board[3][3], chess_board[4][3], chess_board[5][3], chess_board[6][3],
                               chess_board[4][3], chess_board[4][4], chess_board[4][5], chess_board[4][6]]
+        return white_pawn_squares
+    
 
+    # Get the values of all black pawn square on the chess board
+    def get_black_pawn_squares(chess_board):
         black_pawn_squares = [chess_board[3][6], chess_board[4][6], chess_board[5][6], chess_board[6][6],
                               chess_board[3][5], chess_board[4][5], chess_board[5][5], chess_board[5][6]]
+        return black_pawn_squares
+    
 
-        # Define squares can be used to control central squares by knights
+    # Get the values of all white pawn square on the chess board
+    def get_knight_pawn_squares(chess_board):
         knight_squares = [chess_board[3][2], chess_board[4][2], chess_board[5][2], chess_board[6][2],
                           chess_board[2][3], chess_board[3][3], chess_board[6][3], chess_board[7][3],
                           chess_board[2][4], chess_board[7][4], chess_board[2][5], chess_board[7][5],
                           chess_board[2][6], chess_board[3][6], chess_board[6][6], chess_board[7][6],
                           chess_board[3][7], chess_board[4][7], chess_board[5][7], chess_board[6][7]]
+        return knight_squares
+    
 
-        # Set control center heuristics to 0
-        ccHeuristic = 0
-
-        # Give points for each piece in central square (pawn or knight)
-
+    def give_points_central_square(central_squares, ccHeuristic):
         for square in central_squares:
             if square[1] == "p":
                 ccHeuristic += 1
@@ -189,24 +191,65 @@ class Heuristics:
                 ccHeuristic += 3
             elif square[1] == "k":
                 ccHeuristic += 2
+        return ccHeuristic
+    
 
-        # Give points for white pawns in controlling positions
+    def give_points_white_pawn_squares(white_pawn_squares, white, ccHeuristic):
         if white:
             for square in white_pawn_squares:
                 if square == "p":
                     ccHeuristic += 1
+        return ccHeuristic
 
-        # Give points for black pawns in controlling positions
+
+    def give_points_black_pawn_squares(black_pawn_squares, white, ccHeuristic):
         if not white:
             for square in black_pawn_squares:
                 if square == "p":
                     ccHeuristic += 1
+        return ccHeuristic
 
-        # Give points for knights controlling central squares
-
+    
+    def give_points_knight_squares(knight_squares, ccHeuristic):
         for square in knight_squares:
             if square == "n":
                 ccHeuristic += 2
+        return ccHeuristic
+
+
+    # function to score board based on control of center squares
+    # Mike K https://github.com/fieldsher
+    def control_center(self, board, white):
+        # This procedure will give heuristic points for control of central squares
+
+        # Convert board
+        chess_board = ChessBoardToMatrix().convert_to_matrix(board)
+
+        # define central squares: e4, e5, d4, d5
+        central_squares = self.get_central_squares(chess_board)
+
+        # Define squares can be used to control central squares by pawns
+        white_pawn_squares =  self.get_white_pawn_squares(chess_board)
+
+        black_pawn_squares = self.get_black_pawn_squares(chess_board)
+
+        # Define squares can be used to control central squares by knights
+        knight_squares = self.get_knight_pawn_squares(chess_board)
+
+        # Set control center heuristics to 0
+        ccHeuristic = 0
+
+        # Give points for each piece in central square (pawn or knight)
+        ccHeuristic = self.give_points_central_square(central_squares, ccHeuristic)
+        
+        # Give points for white pawns in controlling positions
+        ccHeuristic = self.give_points_white_pawn_squares(white_pawn_squares, white, ccHeuristic)
+
+        # Give points for black pawns in controlling positions
+        ccHeuristic = self.give_points_black_pawn_squares(black_pawn_squares, white, ccHeuristic)
+
+        # Give points for knights controlling central squares
+        ccHeuristic = self.give_points_knight_squares(knight_squares, ccHeuristic)
 
         return ccHeuristic
 
