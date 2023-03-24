@@ -194,6 +194,7 @@ class Heuristics:
         return ccHeuristic
     
 
+    # Give points to white pawns to calculate the scores
     def give_points_white_pawn_squares(white_pawn_squares, white, ccHeuristic):
         if white:
             for square in white_pawn_squares:
@@ -202,6 +203,7 @@ class Heuristics:
         return ccHeuristic
 
 
+    # Give points to white pawns to calculate the scores
     def give_points_black_pawn_squares(black_pawn_squares, white, ccHeuristic):
         if not white:
             for square in black_pawn_squares:
@@ -210,6 +212,7 @@ class Heuristics:
         return ccHeuristic
 
     
+    # Give points to white pawns to calculate the scores
     def give_points_knight_squares(knight_squares, ccHeuristic):
         for square in knight_squares:
             if square == "n":
