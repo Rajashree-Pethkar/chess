@@ -45,7 +45,7 @@ evaluation heuristics:
 the board.
 2. `diagonal_center_control_heuristic` generates a score for a position based on both the value of the pieces
 on the board and on the control of center squares and center diagonals.
-3. `heuristic_3` generates a score for a position based on the value of the pieces, the
+3. `mobility_advanced_heuristics` generates a score for a position based on the value of the pieces, the
 control of the center and diagonals, and on the mobility of the board and the number of
 pieces attacked/defended.
 
