@@ -23,7 +23,7 @@ class Heuristics:
         2. special case for checkmate (+/- 1000 points)
         3. special case for stalemate (0 points)
     """
-    def heuristic_1(self, board, white):
+    def checkmate_stalemate_heuristic(self, board, white):
         # case 1: return +1000 if it is checkmate and we win
         if board.is_checkmate() and (white and board.turn == chess.BLACK or
                                      not white and board.turn == chess.WHITE):
@@ -77,9 +77,9 @@ class Heuristics:
         3. scores boards based on diagonal control
         
     """
-    def heuristic_2(self, board, white):
+    def diagonal_center_control_heuristic(self, board, white):
         # generate the initial score with heuristic #1
-        score = self.heuristic_1(board, white)
+        score = self.checkmate_stalemate_heuristic(board, white)
 
         # then, complement the score with our additional heuristics!
         # dividing by some constant because it seems likely that position is
@@ -198,9 +198,9 @@ class Heuristics:
         5. scores boards based on piece mobility
 
     """
-    def heuristic_3(self, board, white, player_move):
+    def mobility_advanced_heuristics(self, board, white, player_move):
         # generate the initial score with heuristic #2
-        score = self.heuristic_2(board, white)
+        score = self.diagonal_center_control_heuristic(board, white)
 
         # then, complement the score with our additional heuristics again!
         # can scale these down too: average ~30 available moves

@@ -46,7 +46,7 @@ class MoveGenerator:
             elif board.is_stalemate():
                 score = self.STALEMATE
             else:
-                score = turn_multiplier * self.heuristics.heuristic_1(board, white)
+                score = turn_multiplier * self.heuristics.checkmate_stalemate_heuristic(board, white)
             if score > max_score:
                 max_score = score
                 best_move = player_move
@@ -137,7 +137,7 @@ class MoveGenerator:
                     elif board.is_stalemate():
                         score = self.STALEMATE
                     else:
-                        score = -turn_multiplier * self.heuristics.heuristic_1(board)
+                        score = -turn_multiplier * self.heuristics.checkmate_stalemate_heuristic(board)
                     if score > opponent_max_score:
                         opponent_max_score = score
                     board.pop()  # undo the opponent's move
@@ -219,7 +219,7 @@ class MoveGenerator:
                 legal_moves.append(m)
 
         if depth == 0 or len(legal_moves) == 0:  # check for 'terminal node' as well as max depth
-            score = self.heuristics.heuristic_2(board, white)
+            score = self.heuristics.diagonal_center_control_heuristic(board, white)
             return score
 
         if maximize:

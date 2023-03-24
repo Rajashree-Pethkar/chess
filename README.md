@@ -41,9 +41,9 @@ All of our move generation methods (except `random_move`) require the use of a h
 to score leaf nodes or board positions. The file `ChessHeuristics.py` contains our board 
 evaluation heuristics:
 
-1. `heuristic_1` generates a score for a position based on the value of the pieces on
+1. `checkmate_stalemate_heuristic` generates a score for a position based on the value of the pieces on
 the board.
-2. `heuristic_2` generates a score for a position based on both the value of the pieces
+2. `diagonal_center_control_heuristic` generates a score for a position based on both the value of the pieces
 on the board and on the control of center squares and center diagonals.
 3. `heuristic_3` generates a score for a position based on the value of the pieces, the
 control of the center and diagonals, and on the mobility of the board and the number of
