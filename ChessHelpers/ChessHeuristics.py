@@ -97,11 +97,29 @@ class Heuristics:
     
 
     # Get all the diagonal values for white pieces on chess
-    def get_black_diagonals_chess(chess_board):
+    def get_monday_diagonals_chess(chess_board):
         white_diagonal = [chess_board[0][7], chess_board[1][6], chess_board[2][5], chess_board[3][4],
                           chess_board[4][3], chess_board[5][2], chess_board[6][1], chess_board[7][0]]
         return white_diagonal
     
+
+    def get_black_diagonal_heuristics(black_diagonal, diagonal_figures, white, diagonal_heuristics):
+        for cell in black_diagonal:
+            for figure in diagonal_figures:
+                if figure == cell[1]:
+                    if (cell[0] == "w" and white) or (cell[0] == "b" and not white):
+                        diagonal_heuristics += 3
+        return diagonal_heuristics
+
+
+    def get_white_diagonal_heuristics(white_diagonal, diagonal_figures, white, diagonal_heuristics):
+        for cell in white_diagonal:
+            for figure in diagonal_figures:
+                if figure == cell[1]:
+                    if (cell[0] == "w" and white) or (cell[0] == "b" and not white):
+                        diagonal_heuristics += 3
+        return diagonal_heuristics
+
 
     # function to score board based on control of diagonals
     # Mike K https://github.com/fieldsher
@@ -118,20 +136,13 @@ class Heuristics:
         chess_board = ChessBoardToMatrix().convert_to_matrix(board)
 
         # Define diagonals
-        black_diagonal = black_diagonal(chess_board)
+        black_diagonal = self.get_black_diagonals_chess(chess_board)
 
-        white_diagonal = white_diagonal(chess_board)
+        white_diagonal = self.get_monday_diagonals_chess(chess_board)
 
-        for cell in black_diagonal:
-            for figure in diagonal_figures:
-                if figure == cell[1]:
-                    if (cell[0] == "w" and white) or (cell[0] == "b" and not white):
-                        diagonal_heuristics += 3
-        for cell in white_diagonal:
-            for figure in diagonal_figures:
-                if figure == cell[1]:
-                    if (cell[0] == "w" and white) or (cell[0] == "b" and not white):
-                        diagonal_heuristics += 3
+        diagonal_heuristics += self.get_black_diagonal_heuristics(black_diagonal, diagonal_figures, white, diagonal_heuristics)
+        
+        diagonal_heuristics += self.get_white_diagonal_heuristics(white_diagonal, diagonal_figures, white, diagonal_heuristics)
 
         return diagonal_heuristics
 
