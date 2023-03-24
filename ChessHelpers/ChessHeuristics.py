@@ -4,6 +4,7 @@
 # and which are used to score our chess positions in ChessEngineHelper.py
 
 import chess
+
 global best_move
 
 
@@ -14,6 +15,9 @@ class Heuristics:
         self.piece_score = {"k": 0, "q": 10, "r": 5, "b": 3, "n": 3, "p": 1}
         self.mobility_piece_score = {"k": 4, "q": 10, "r": 5, "b": 3, "n": 3, "p": 1}
 
+    def is_not_used(self):
+        pass
+
     """
     Heuristic #1
     
@@ -23,8 +27,9 @@ class Heuristics:
         2. special case for checkmate (+/- 1000 points)
         3. special case for stalemate (0 points)
     """
+
     def checkmate_stalemate_heuristic(self, board, white):
-        # case 1: return +1000 if it is checkmate and we win
+        # case 1: return +1000 if it is checkmate, and we win
         if board.is_checkmate() and (white and board.turn == chess.BLACK or
                                      not white and board.turn == chess.WHITE):
             return self.CHECKMATE
@@ -77,6 +82,7 @@ class Heuristics:
         3. scores boards based on diagonal control
         
     """
+
     def diagonal_center_control_heuristic(self, board, white):
         # generate the initial score with heuristic #1
         score = self.checkmate_stalemate_heuristic(board, white)
@@ -87,23 +93,23 @@ class Heuristics:
         score += self.control_diagonals(board, white) / 5
         score += self.control_center(board, white) / 4
         return score
-    
 
     # Get all the diagonal values for black pieces on chess
-    def get_black_diagonals_chess(chess_board):
+    def get_black_diagonals_chess(self, chess_board):
+        self.is_not_used()
         black_diagonal = [chess_board[1][1], chess_board[2][2], chess_board[3][3], chess_board[4][4],
                           chess_board[5][5], chess_board[6][6], chess_board[7][7], chess_board[0][0]]
         return black_diagonal
-    
 
     # Get all the diagonal values for white pieces on chess
-    def get_monday_diagonals_chess(chess_board):
+    def get_monday_diagonals_chess(self, chess_board):
+        self.is_not_used()
         white_diagonal = [chess_board[0][7], chess_board[1][6], chess_board[2][5], chess_board[3][4],
                           chess_board[4][3], chess_board[5][2], chess_board[6][1], chess_board[7][0]]
         return white_diagonal
-    
 
-    def get_black_diagonal_heuristics(black_diagonal, diagonal_figures, white, diagonal_heuristics):
+    def get_black_diagonal_heuristics(self, black_diagonal, diagonal_figures, white, diagonal_heuristics):
+        self.is_not_used()
         for cell in black_diagonal:
             for figure in diagonal_figures:
                 if figure == cell[1]:
@@ -111,15 +117,14 @@ class Heuristics:
                         diagonal_heuristics += 3
         return diagonal_heuristics
 
-
-    def get_white_diagonal_heuristics(white_diagonal, diagonal_figures, white, diagonal_heuristics):
+    def get_white_diagonal_heuristics(self, white_diagonal, diagonal_figures, white, diagonal_heuristics):
+        self.is_not_used()
         for cell in white_diagonal:
             for figure in diagonal_figures:
                 if figure == cell[1]:
                     if (cell[0] == "w" and white) or (cell[0] == "b" and not white):
                         diagonal_heuristics += 3
         return diagonal_heuristics
-
 
     # function to score board based on control of diagonals
     # Mike K https://github.com/fieldsher
@@ -140,85 +145,86 @@ class Heuristics:
 
         white_diagonal = self.get_monday_diagonals_chess(chess_board)
 
-        diagonal_heuristics += self.get_black_diagonal_heuristics(black_diagonal, diagonal_figures, white, diagonal_heuristics)
-        
-        diagonal_heuristics += self.get_white_diagonal_heuristics(white_diagonal, diagonal_figures, white, diagonal_heuristics)
+        diagonal_heuristics += self.get_black_diagonal_heuristics(black_diagonal, diagonal_figures, white,
+                                                                  diagonal_heuristics)
+
+        diagonal_heuristics += self.get_white_diagonal_heuristics(white_diagonal, diagonal_figures, white,
+                                                                  diagonal_heuristics)
 
         return diagonal_heuristics
 
-
     # Get the values of all central squares on the chess board
-    def get_central_squares(chess_board):
+    def get_central_squares(self, chess_board):
+        self.is_not_used()
         central_squares = [chess_board[4][4], chess_board[4][5], chess_board[5][4], chess_board[5][5]]
         return central_squares
-    
 
     # Get the values of all white pawn squares on the chess board
-    def get_white_pawn_squares(chess_board):
+    def get_white_pawn_squares(self, chess_board):
+        self.is_not_used()
         white_pawn_squares = [chess_board[3][3], chess_board[4][3], chess_board[5][3], chess_board[6][3],
                               chess_board[4][3], chess_board[4][4], chess_board[4][5], chess_board[4][6]]
         return white_pawn_squares
-    
 
     # Get the values of all black pawn square on the chess board
-    def get_black_pawn_squares(chess_board):
+    def get_black_pawn_squares(self, chess_board):
+        self.is_not_used()
         black_pawn_squares = [chess_board[3][6], chess_board[4][6], chess_board[5][6], chess_board[6][6],
                               chess_board[3][5], chess_board[4][5], chess_board[5][5], chess_board[5][6]]
         return black_pawn_squares
-    
 
     # Get the values of all white pawn square on the chess board
-    def get_knight_pawn_squares(chess_board):
+    def get_knight_pawn_squares(self, chess_board):
+        self.is_not_used()
         knight_squares = [chess_board[3][2], chess_board[4][2], chess_board[5][2], chess_board[6][2],
                           chess_board[2][3], chess_board[3][3], chess_board[6][3], chess_board[7][3],
                           chess_board[2][4], chess_board[7][4], chess_board[2][5], chess_board[7][5],
                           chess_board[2][6], chess_board[3][6], chess_board[6][6], chess_board[7][6],
                           chess_board[3][7], chess_board[4][7], chess_board[5][7], chess_board[6][7]]
         return knight_squares
-    
 
-    def give_points_central_square(central_squares, ccHeuristic):
+    def give_points_central_square(self, central_squares, cc_heuristic):
+        self.is_not_used()
         for square in central_squares:
             if square[1] == "p":
-                ccHeuristic += 1
+                cc_heuristic += 1
             elif square[1] == "n":
-                ccHeuristic += 2
+                cc_heuristic += 2
             elif square[1] == "b":
-                ccHeuristic += 2
+                cc_heuristic += 2
             elif square[1] == "r":
-                ccHeuristic += 2
+                cc_heuristic += 2
             elif square[1] == "q":
-                ccHeuristic += 3
+                cc_heuristic += 3
             elif square[1] == "k":
-                ccHeuristic += 2
-        return ccHeuristic
-    
+                cc_heuristic += 2
+        return cc_heuristic
 
     # Give points to white pawns to calculate the scores
-    def give_points_white_pawn_squares(white_pawn_squares, white, ccHeuristic):
+    def give_points_white_pawn_squares(self, white_pawn_squares, white, cc_heuristic):
+        self.is_not_used()
         if white:
             for square in white_pawn_squares:
                 if square == "p":
-                    ccHeuristic += 1
-        return ccHeuristic
-
+                    cc_heuristic += 1
+        return cc_heuristic
 
     # Give points to white pawns to calculate the scores
-    def give_points_black_pawn_squares(black_pawn_squares, white, ccHeuristic):
+    def give_points_black_pawn_squares(self, black_pawn_squares, white, cc_heuristic):
+        self.is_not_used()
         if not white:
             for square in black_pawn_squares:
                 if square == "p":
-                    ccHeuristic += 1
-        return ccHeuristic
+                    cc_heuristic += 1
+        return cc_heuristic
 
-    
     # Give points to white pawns to calculate the scores
-    def give_points_knight_squares(knight_squares, ccHeuristic):
+    def give_points_knight_squares(self, knight_squares, cc_heuristic):
+        self.is_not_used()
         for square in knight_squares:
             if square == "n":
-                ccHeuristic += 2
-        return ccHeuristic
-
+                cc_heuristic += 2
+        return cc_heuristic
 
     # function to score board based on control of center squares
     # Mike K https://github.com/fieldsher
@@ -232,7 +238,7 @@ class Heuristics:
         central_squares = self.get_central_squares(chess_board)
 
         # Define squares can be used to control central squares by pawns
-        white_pawn_squares =  self.get_white_pawn_squares(chess_board)
+        white_pawn_squares = self.get_white_pawn_squares(chess_board)
 
         black_pawn_squares = self.get_black_pawn_squares(chess_board)
 
@@ -240,21 +246,21 @@ class Heuristics:
         knight_squares = self.get_knight_pawn_squares(chess_board)
 
         # Set control center heuristics to 0
-        ccHeuristic = 0
+        cc_heuristic = 0
 
         # Give points for each piece in central square (pawn or knight)
-        ccHeuristic = self.give_points_central_square(central_squares, ccHeuristic)
-        
+        cc_heuristic = self.give_points_central_square(central_squares, cc_heuristic)
+
         # Give points for white pawns in controlling positions
-        ccHeuristic = self.give_points_white_pawn_squares(white_pawn_squares, white, ccHeuristic)
+        cc_heuristic = self.give_points_white_pawn_squares(white_pawn_squares, white, cc_heuristic)
 
         # Give points for black pawns in controlling positions
-        ccHeuristic = self.give_points_black_pawn_squares(black_pawn_squares, white, ccHeuristic)
+        cc_heuristic = self.give_points_black_pawn_squares(black_pawn_squares, white, cc_heuristic)
 
         # Give points for knights controlling central squares
-        ccHeuristic = self.give_points_knight_squares(knight_squares, ccHeuristic)
+        cc_heuristic = self.give_points_knight_squares(knight_squares, cc_heuristic)
 
-        return ccHeuristic
+        return cc_heuristic
 
     """
     Heuristic #3
@@ -268,6 +274,7 @@ class Heuristics:
         5. scores boards based on piece mobility
 
     """
+
     def mobility_advanced_heuristics(self, board, white, player_move):
         # generate the initial score with heuristic #2
         score = self.diagonal_center_control_heuristic(board, white)
@@ -281,6 +288,7 @@ class Heuristics:
     # mobility - number of legal moves available to a player after the current move
     # - Rajashree P
     def mobility(self, board):
+        self.is_not_used()
         return board.legal_moves.count()
 
     # mobility - number of pieces attacked + number pieces defended
@@ -386,7 +394,7 @@ class Heuristics:
                 score += self.mobility_piece_score[piece_type]
 
         return score
-    
+
     def get_knight_score_for_mobility_advanced(self, row_index, col_index, chess_board, score):
         offset = [-2, -1, 1, 2]
         for row_offset in offset:
